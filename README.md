@@ -2,6 +2,8 @@
 
 A lightweight **No Hit Delay** mod (`rnhd`) for **Minecraft 1.8.9 (Ornithe / OneClient)** with native **OneConfig v1** support.
 
+IT IS CALLED RNHD IN ONECONFIG
+
 Restores Minecraft 1.7-style attack responsiveness by removing or customizing the 10-tick miss attack cooldown (`Minecraft#doAttack`) introduced in 1.8, while leaving the GUI anti-click-through cooldown untouched.
 
 ## Features
