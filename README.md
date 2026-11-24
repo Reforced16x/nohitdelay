@@ -1,5 +1,8 @@
 # RNHD (No Hit Delay)
 
+[![Downloads](https://img.shields.io/github/downloads/Reforced16x/nohitdelay/total?style=for-the-badge)](https://github.com/Reforced16x/nohitdelay/releases)
+[![Latest Downloads](https://img.shields.io/github/downloads/Reforced16x/nohitdelay/latest/total?style=for-the-badge)](https://github.com/Reforced16x/nohitdelay/releases/latest)
+
 A lightweight **No Hit Delay** mod (`rnhd`) for **Minecraft 1.8.9 (Ornithe / OneClient)** with native **OneConfig v1** support.
 
 IT IS CALLED RNHD IN ONECONFIG
