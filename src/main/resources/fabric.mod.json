@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "rnhd",
+  "version": "${version}",
+  "name": "RNHD",
+  "description": "Removes or customizes the 1.8.9 miss attack cooldown (No Hit Delay) for Ornithe / OneClient with OneConfig.",
+  "authors": [
+    "Reforced"
+  ],
+  "contact": {
+    "sources": "https://github.com/Reforced16x/nohitdelay",
+    "issues": "https://github.com/Reforced16x/nohitdelay/issues"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.rnhd.RnhdMod"
+    ]
+  },
+  "mixins": [
+    "rnhd.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.8.9"
+  },
+  "suggests": {
+    "oneconfigv1": ">=1.6.0"
+  }
+}

@@ -1,0 +1,122 @@
+plugins {
+    id 'java'
+    id 'fabric-loom' version "${loom_version}"
+    id 'ploceus' version "${ploceus_version}"
+}
+
+version = "${project.mod_version}+mc${project.minecraft_version}"
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    maven {
+        name = 'Legacy Fabric'
+        url = 'https://maven.legacyfabric.net'
+    }
+    maven {
+        name = 'Ornithe Releases'
+        url = 'https://maven.ornithemc.net/releases'
+    }
+    maven {
+        name = 'Ornithe Snapshots'
+        url = 'https://maven.ornithemc.net/snapshots'
+    }
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    maven {
+        name = 'Polyfrost'
+        url = 'https://repo.polyfrost.org/releases'
+    }
+    maven {
+        name = 'Polyfrost Snapshots'
+        url = 'https://repo.polyfrost.org/snapshots'
+    }
+    maven {
+        name = 'JetBrains Compose'
+        url = 'https://maven.pkg.jetbrains.space/public/p/compose/dev'
+    }
+    google()
+    mavenCentral()
+}
+
+ploceus {
+    setGeneration(2)
+}
+
+configurations.named("compileClasspath") {
+    attributes {
+        attribute(org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings ploceus.featherMappings(project.feather_build)
+
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    if (file('.oneconfig-api').exists()) {
+        compileOnly fileTree(dir: '.oneconfig-api', include: '*.jar')
+    } else {
+        compileOnly "org.polyfrost.oneconfig:config:1.7.1"
+        compileOnly "org.polyfrost.oneconfig:config-impl:1.7.1"
+        compileOnly "org.polyfrost.oneconfig:ui:1.7.1"
+        compileOnly "org.polyfrost.oneconfig:events:1.7.1"
+        compileOnly "org.polyfrost.oneconfig:utils:1.7.1"
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}
+
+tasks.named("remapJar") {
+    doLast {
+        def appData = System.getenv("APPDATA")
+        if (appData) {
+            def modsDir = new File(appData, "Polyfrost/OneClient/clusters/1.8.9 Fabric/mods")
+            if (modsDir.isDirectory()) {
+                def outJar = archiveFile.get().asFile
+                modsDir.listFiles()?.each { File f ->
+                    if (f.name.startsWith("rnhd-") && f.name.endsWith(".jar") && f.name != outJar.name) {
+                        f.delete()
+                    }
+                }
+                def targetJar = new File(modsDir, outJar.name)
+                try {
+                    java.nio.file.Files.copy(
+                            outJar.toPath(),
+                            targetJar.toPath(),
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    )
+                    logger.lifecycle("Copied ${outJar.name} to ${modsDir}")
+                } catch (java.io.IOException e) {
+                    logger.warn("Could not overwrite ${targetJar} (Minecraft/OneClient may be running): ${e.message}")
+                }
+            }
+        }
+    }
+}
